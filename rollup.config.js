@@ -4,7 +4,7 @@ const { preserveShebangs } = require('rollup-plugin-preserve-shebangs');
 
 /**@type {import("rollup").RollupOptions}*/
 const config = {
-    input: "./bin/index.ts",
+    input: "./index.ts",
     output: {
         name: "bundle",
         dir: "dist",

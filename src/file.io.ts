@@ -1,6 +1,6 @@
 import process from "process";
 import path from "path";
-import { NODE_ENV } from "../../config";
+import { NODE_ENV } from "../config";
 
 const inputFileName = process.argv[2]
 const currentDirectory  = process.cwd();

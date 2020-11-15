@@ -1,0 +1,5 @@
+export {staticUtility} from "./src/classes"
+export {classesToWrite} from "./src/cssmatch"
+export { inputFilePath, outputFilePath } from "./src/file.io"
+export { onlyTinyClasses } from "./src/match"
+export { htmlClasses } from "./src/readfile"
