@@ -49,8 +49,8 @@ function getASTRules(rule: Rule, classes: string[]): Rule | void {
  *              `writeCssFile` function finishes the final check. This function only returns
  *              objects that lazily includes the css .{class} for that.
  * @author KR Tirtho
- * @param {string} cssFile
- * @param {string[]} classes
+ * @param {string} cssFile the file that includes all the css style declarations as string.
+ * @param {string[]} classes all the classes that needs to be matched with css selectors
  * @returns {css.Rule} Rule
  */
 export function getCssObjects(
@@ -82,6 +82,11 @@ export function getCssObjects(
             mediaRuleStore.length !== 0 &&
                 cssObjects.push({ ...rule, rules: mediaRuleStore });
         }
+        /**
+         * TODO: @Keyframes recognition & return them relatively
+         * TODO: @CustomMedia recognition
+         */
+        
     });
     return cssObjects ?? false;
 }

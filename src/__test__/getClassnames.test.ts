@@ -1,3 +1,4 @@
+import { join } from "path";
 import { getClassnames } from "../getClassnames";
 
 test("Read File With wrong pattern", async () => {
@@ -13,7 +14,17 @@ test("Read File from a test html file", async () => {
         "form",
         "custom-input",
         "btn",
-        "btn-success"
-    ]
-    expect(await getClassnames("src/__test__/index.test.html")).toEqual<string[]>(classFields)
-})
+        "btn-success",
+    ];
+    expect(
+        await getClassnames(
+            join(
+                process.cwd(),
+                "src",
+                "__test__",
+                "__test_assets__",
+                "index.test.html"
+            )
+        )
+    ).toEqual<string[]>(classFields);
+});
