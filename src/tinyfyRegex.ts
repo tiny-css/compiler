@@ -1,12 +1,12 @@
 /**
- * @param propertyName: String
- * @param subPropertyName [Optional] : String | String[ ] 
- * @param propertyValues: String | String[ ]
- * @returns Symbol | Regular Expression
-  */
-
-// Function for easier implementation of Regex
-const tinyFy = (propertyName:string, subPropertyName: string | string[], propertyValues?: string | string[])=>{
+ * @description function for easier implementation of Regex
+ * @author KR Tirtho
+ * @param {string} propertyName
+ * @param {(string | string[])} subPropertyName
+ * @param {(string | string[])} [propertyValues]
+ * @return {*}  {(string|void)}
+ */
+function tinyFy (propertyName:string, subPropertyName: string | string[], propertyValues?: string | string[]):string|void{
     /* If  property Values Argument not available then it executes */
     if(typeof propertyName!=="string"){
       console.error(new TypeError(`Type of propertyName of ${typeof propertyName} is not allowed`))
