@@ -1,6 +1,4 @@
-/inspiration
-/test-css
 node_modules
-dist
+lib
 *.env
 *.log

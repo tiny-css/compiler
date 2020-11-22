@@ -8,6 +8,6 @@ import {tinyCssClasses} from "@tiny-css/classes"
  * @param {object} [classObj=tinyCssClasses]
  * @return {*}  {string[]}
  */
-export function filterTinyClassnames(classnames: string[], classObj: object=tinyCssClasses):string[] {
+export function filterWithClassnames(classnames: string[], classObj: object=tinyCssClasses):string[] {
     return classnames.filter(classname => Object.values(classObj).includes(classname));
 }

@@ -1,7 +1,7 @@
 import { Media, Rule, StyleRules } from "css";
 import * as fs from "fs";
 import { join } from "path";
-import bootstrap_classes from "../bootstrap_classes/bootstrap_classes";
+import { cwd } from "process";
 import { getCssObjects } from "../getCssObjects";
 
 describe("CSS Object Test", () => {
@@ -15,6 +15,7 @@ describe("CSS Object Test", () => {
         done();
     });
     beforeEach((done) => {
+        const bootstrap_classes = JSON.parse(fs.readFileSync(join(cwd(), "src", "bootstrap_classes", "bootstrap_classes.json"), "utf-8"))
         cssObj =  getCssObjects(cssFile, Object.values(bootstrap_classes));
         done();
     })

@@ -15,6 +15,7 @@ export enum ASTTypes {
     namespace = "namespace",
     supports = "supports",
     declaration = "declaration",
+    stylesheet = "stylesheet"
 }
 
 function getASTRules(rule: Rule, classes: string[]): Rule | void {

@@ -18,15 +18,10 @@ function globPromised(pattern: string, options?: IOptions): Promise<string[]> {
  * @param {string} pattern glob pattern for path
  * @return {*}  {(Promise<string[]|false>)}
  */
-export async function getClassnames(pattern:string): Promise<string[]|false> {
-    const cwd = process.cwd();
+export async function getClassnames(pattern:string, opts?: IOptions): Promise<string[]|false> {
+    const cwd = opts?.cwd || process.cwd();
     try {
-        const config: IOptions = {
-            cwd,
-            // TODO: add --ignore command-line arg
-            ignore: ["**/node_modules/**/*"],
-        };
-        const filesArr = await globPromised(pattern, config); //returns an array glob files
+        const filesArr = await globPromised(pattern, opts); //returns an array glob files
         const classArr = await Promise.all(filesArr.map(async (file) => {
             const fileAbs = path.join(cwd, file)
             try {
