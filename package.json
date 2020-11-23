@@ -15,7 +15,8 @@
   },
   "directories": {
     "lib": "./lib",
-    "test": "./lib/src/__test__"
+    "test": "./lib/src/__test__",
+    "example": "./example"
   },
   "files": [
     "/lib"

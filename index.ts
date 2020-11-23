@@ -21,6 +21,14 @@ import yargs, { Argv } from "yargs";
 import chalk from "chalk";
 import { IOptions } from "glob";
 
+const tinyCssCredits = `/*!
+ * CSS Generated using @tiny-css/compiler@0.0.1 
+ * @author KR.Tirtho
+ * Copyright 2020 KR.Tirtho
+ * Licensed under MIT (https://github.com/tiny-css/compiler/blob/master/LICENSE)
+ */\n
+`
+
 type TArgv = Argv["argv"];
 
 interface Arguments extends TArgv {
@@ -130,7 +138,8 @@ getClassnames(argv._[0], config)
                     parsingErrors: [],
                 },
             });
-            await fs.promises.writeFile(argv.output, cssStr, {
+            
+            await fs.promises.writeFile(argv.output, `${tinyCssCredits}${cssStr}`, {
                 encoding: "utf-8",
             });
             console.log(

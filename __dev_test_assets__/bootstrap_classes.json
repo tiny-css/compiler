@@ -1837,5 +1837,6 @@
     "dlHorizontal": "dl-horizontal",
     "lead": "lead",
     "listInline": "list-inline",
-    "listUnstyled": "list-unstyled"
+    "listUnstyled": "list-unstyled",
+    "navbarNav":"navbar-nav"
 }

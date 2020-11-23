@@ -39,6 +39,7 @@ yarn add @tiny-css/compiler --dev
 ```bash
 $ tiny-css ./**/*.html --input ./tiny.css
 ```
+More examples can be found [here](example)
 
 ## Using with custom classnames & css file
 
