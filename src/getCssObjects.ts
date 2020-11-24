@@ -1,4 +1,5 @@
 import css, { Rule, Media, StyleRules } from "css";
+import { HTMLTagsRegexp } from "./utils/htmltagsRegexp";
 
 export enum ASTTypes {
     rule = "rule",
@@ -15,7 +16,7 @@ export enum ASTTypes {
     namespace = "namespace",
     supports = "supports",
     declaration = "declaration",
-    stylesheet = "stylesheet"
+    stylesheet = "stylesheet",
 }
 
 function getASTRules(rule: Rule, classes: string[]): Rule | void {
@@ -23,22 +24,28 @@ function getASTRules(rule: Rule, classes: string[]): Rule | void {
      * clears css sudo/attribute (e.g. ::before/[type="text"]) selectors regexp
      */
     const repX = /(:[:]?|\[).*\]?/g;
-    const selectors = (rule as Rule).selectors
+    const selectors = rule.selectors
         ?.map((selector) => {
             /**
              * replaces css sudo/attribute (e.g. ::before/[type="text"])
-             *  selectors with ""
+             * selectors with ""
              */
-            return selector.replace(repX, "");
+                return selector.replace(repX, "");
         })
         .join(",")
-        .replace(/\s?\+\s?|\s?\>\s?/g, ",")
+        .replace(/\s+\+\s+|\s+\>\s+/g, ",") //replaces "+" & ">" with ","
         .split(" ")
         .join(",");
     const matchedSelector = selectors?.split(",").filter((selector) => {
-        /* Remove anything before .class (e.g. a.text-primary -> text-primary) */
-        const wordyClass = selector.replace(/[^,].*\./, "").replace(".", "")
-        return classes.includes(wordyClass);
+        const unwantedCssSelectorsRegex = /:(?=([^"'\\]*(\\.|["']([^"'\\]*\\.)*[^"'\\]*['"]))*[^"']*$)/g; //removes any attribute/sudo selector
+        const wordyClass = selector
+            .split(unwantedCssSelectorsRegex)
+            .join("")
+            .trim();
+        if (!wordyClass.startsWith(".") || !wordyClass.includes(".")) {
+            return HTMLTagsRegexp.test(wordyClass);
+        }
+        return classes.map((_class) => "." + _class).includes(wordyClass);
     });
     if (matchedSelector?.length !== 0) {
         return rule;
@@ -87,7 +94,6 @@ export function getCssObjects(
          * TODO: @Keyframes recognition & return them relatively
          * TODO: @CustomMedia recognition
          */
-        
     });
     return cssObjects ?? false;
 }
