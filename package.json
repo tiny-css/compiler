@@ -29,7 +29,8 @@
     "CSS",
     "FRAMEWORK",
     "COMPILED",
-    "JS"
+    "JavaScript",
+    "Typescript"
   ],
   "dependencies": {
     "chalk": "^4.1.0",
@@ -41,7 +42,6 @@
     "yargs": "^15.4.1"
   },
   "devDependencies": {
-    "@jest/types": "^26.6.2",
     "@types/css": "0.0.31",
     "@types/glob": "^7.1.3",
     "@types/is-url": "^1.2.28",

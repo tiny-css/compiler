@@ -2,21 +2,21 @@ import { Media, Rule, StyleRules } from "css";
 import * as fs from "fs";
 import { join } from "path";
 import { cwd } from "process";
-import { getCssObjects } from "../getCssObjects";
+import { ASTTypes, getCssObjects } from "../getCssObjects";
 
 describe("CSS Object Test", () => {
-    let cssFile:string;
+    let cssFile: string;
     let cssObj: StyleRules["rules"] | false;
     beforeAll((done) => {
-         cssFile = fs.readFileSync(
+        cssFile = fs.readFileSync(
             join(process.cwd(), "src", "__test__", "__test_assets__", "getCSSObject.test.css"),
             { encoding: "utf-8" }
         );
         done();
     });
     beforeEach((done) => {
-        const bootstrap_classes = JSON.parse(fs.readFileSync(join(cwd(), "src", "bootstrap_classes", "bootstrap_classes.json"), "utf-8"))
-        cssObj =  getCssObjects(cssFile, Object.values(bootstrap_classes));
+        const bootstrap_classes = JSON.parse(fs.readFileSync(join(cwd(), "__dev_test_assets__", "bootstrap_classes.json"), "utf-8"))
+        cssObj = getCssObjects(cssFile, Object.values(bootstrap_classes));
         done();
     })
     it("Shouldn't output false instead of outputting css-AST[] ", () => {
@@ -47,7 +47,9 @@ describe("CSS Object Test", () => {
         ];
         if (cssObj) {
             const mediaSelectors = cssObj.map((cssDec: Media) => {
-                return cssDec.rules?.map((dec: Rule) => dec.selectors).flat(1)
+                if (cssDec.type === ASTTypes.media) {
+                    return cssDec.rules?.map((dec: Rule) => dec.type === ASTTypes.rule && dec.selectors).flat(1).filter(Boolean)
+                };
             }).flat(1).filter(Boolean);
 
             expect(mediaSelectors).toEqual<string[]>(selectors);

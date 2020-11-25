@@ -13,7 +13,6 @@ import { filterWithClassnames } from "./src/filterTinyClasses";
 import { getClassnames } from "./src/getClassnames";
 import * as fs from "fs";
 import { join } from "path";
-import { tinyCssClasses } from "@tiny-css/classes";
 import "./src/getCssObjects";
 import { ASTTypes, getCssObjects } from "./src/getCssObjects";
 import css from "css";
@@ -25,7 +24,7 @@ import { buildCSSClass } from "./src/buildCSSClass";
 const tinyCssCredits = `/*!
  * CSS Generated using @tiny-css/compiler@0.0.1 
  * @author KR.Tirtho
- * Copyright 2020 KR.Tirtho
+ * ©Copyright 2020 KR.Tirtho
  * Licensed under MIT (https://github.com/tiny-css/compiler/blob/master/LICENSE)
  */\n
 `
