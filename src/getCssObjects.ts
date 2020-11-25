@@ -24,25 +24,34 @@ function getASTRules(rule: Rule, classes: string[]): Rule | void {
      * clears css sudo/attribute (e.g. ::before/[type="text"]) selectors regexp
      */
     const repX = /(:[:]?|\[).*\]?/g;
+    const ignoreRootRegexp = /:root|\*+:+.*/g;
     const selectors = rule.selectors
         ?.map((selector) => {
             /**
              * replaces css sudo/attribute (e.g. ::before/[type="text"])
              * selectors with ""
              */
-                return selector.replace(repX, "");
+            /* ignores the :root global var space & also *:before or *::(sudo-selector)*/
+            if (ignoreRootRegexp.test(selector)) {
+                return selector
+            }
+            return selector.replace(repX, "");
         })
         .join(",")
         .replace(/\s+\+\s+|\s+\>\s+/g, ",") //replaces "+" & ">" with ","
         .split(" ")
         .join(",");
     const matchedSelector = selectors?.split(",").filter((selector) => {
+        /* ignoring global :root and *:(sudo-selectors) */
         const unwantedCssSelectorsRegex = /:(?=([^"'\\]*(\\.|["']([^"'\\]*\\.)*[^"'\\]*['"]))*[^"']*$)/g; //removes any attribute/sudo selector
         const wordyClass = selector
             .split(unwantedCssSelectorsRegex)
             .join("")
             .trim();
         if (!wordyClass.startsWith(".") || !wordyClass.includes(".")) {
+            if (/:root|\*+:*.*/g.test(selector)) {
+                return true;
+            }
             return HTMLTagsRegexp.test(wordyClass);
         }
         return classes.map((_class) => "." + _class).includes(wordyClass);

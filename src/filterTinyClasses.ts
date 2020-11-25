@@ -1,5 +1,3 @@
-import { tinyCssClasses } from "@tiny-css/classes"
-
 /**
  * @description Filters tiny-css classes by default. But can also filter any provided css 
  *              classObj.
@@ -8,6 +6,6 @@ import { tinyCssClasses } from "@tiny-css/classes"
  * @param {object} [globalClassnames=tinyCssClasses]
  * @return {*}  {string[]}
  */
-export function filterWithClassnames(classnames: string[], globalClassnames: object | string[] = tinyCssClasses): string[] {
+export function filterWithClassnames(classnames: string[], globalClassnames: object | string[]): string[] {
     return classnames.filter(classname => (globalClassnames instanceof Object ? Object.values(globalClassnames) : globalClassnames).includes("."+classname));
 }
