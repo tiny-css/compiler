@@ -20,6 +20,7 @@ import css from "css";
 import yargs, { Argv } from "yargs";
 import chalk from "chalk";
 import { IOptions } from "glob";
+import { buildCSSClass } from "./src/buildCSSClass";
 
 const tinyCssCredits = `/*!
  * CSS Generated using @tiny-css/compiler@0.0.1 
@@ -36,8 +37,9 @@ interface Arguments extends TArgv {
     i: string;
     output: string;
     o: string;
-    classes?: string;
-    c?: string;
+    "cdn-version": string;
+    c: string;
+    "disable-cache": boolean;
     ignore: string[];
     cwd: string;
     debug: boolean;
@@ -49,20 +51,20 @@ const argv = yargs
         input: {
             alias: "i",
             description:
-                "CSS Input file which will be used to retrieve style objects",
+                "CSS Input file which will be used to retrieve style objects. This can be a fs path or a cdm link",
             demandOption: true,
+        },
+        "cdn-version": {
+            alias: "c",
+            description: "The version of the css input file. Important if `--disable-cache` option is disabled & files are cached. This is used to determine the cache file location. Not required if using fs path",
+            default: "0.0.1",
+            defaultDescription: "0.0.1"
         },
         output: {
             alias: "o",
             description: "CSS Output file",
             default: join(process.cwd(), "tiny.output.css"),
             defaultDescription: "${cwd}/tiny.output.css",
-        },
-        classes: {
-            alias: "c",
-            description: `The path to the <json> file where all the default classnames are described. This JSON file must contain all the classes in a Single Object.
-            e.g: {bgPrimary: "bg-primary", bold: "bold"}`,
-            defaultDescription: "@tiny-css/classes -> tinyCssClasses [Object] ",
         },
         debug: {
             type: "boolean",
@@ -84,15 +86,21 @@ const argv = yargs
             default: ["node_modules"],
             defaultDescription: "**/node_modules/**/*",
         },
+        "disable-cache": {
+            boolean: true,
+            description: "Disable caching stylesheets",
+            default: false,
+            defaultDescription: "false"
+        }
     })
     .help()
     .alias("help", "h").argv as Arguments;
 
 const cwd = argv.cwd || process.cwd();
-    
+
 const config: IOptions = {
     cwd: argv.cwd,
-    ignore: argv.ignore.map(ign=>join(cwd, ign)),
+    ignore: argv.ignore.map(ign => join(cwd, ign)),
     debug: argv.debug,
 };
 
@@ -107,20 +115,10 @@ getClassnames(argv._[0], config)
                 );
                 process.exit(0);
             }
-            const providedClassnames = argv.classes
-                ? JSON.parse(
-                      await fs.promises.readFile(argv.classes, {
-                          encoding: "utf-8",
-                      })
-                  )
-                : tinyCssClasses;
+            const providedClassnames = await buildCSSClass(argv.input, { disabledCache: argv["disable-cache"], version: argv["cdn-version"] })
 
-            const filteredClassnames = filterWithClassnames(
-                classnames,
-                Object.values(providedClassnames)
-            );
-            const cssFileStr = await fs.promises.readFile(argv.input, "utf-8");
-            const cssObj = getCssObjects(cssFileStr, filteredClassnames);
+            const filteredClassnames = filterWithClassnames(classnames, providedClassnames.classnames);
+            const cssObj = getCssObjects(providedClassnames.content, filteredClassnames);
 
             if (!cssObj) {
                 console.error(
@@ -138,7 +136,7 @@ getClassnames(argv._[0], config)
                     parsingErrors: [],
                 },
             });
-            
+
             await fs.promises.writeFile(argv.output, `${tinyCssCredits}${cssStr}`, {
                 encoding: "utf-8",
             });
