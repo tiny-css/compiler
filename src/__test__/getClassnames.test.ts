@@ -20,8 +20,6 @@ test("Read File from a test html file", async () => {
         await getClassnames(
             join(
                 process.cwd(),
-                "src",
-                "__test__",
                 "__test_assets__",
                 "index.test.html"
             )

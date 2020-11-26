@@ -21,8 +21,10 @@ import chalk from "chalk";
 import { IOptions } from "glob";
 import { buildCSSClass } from "./src/buildCSSClass";
 
+const version = JSON.parse(fs.readFileSync("./package.json", "utf-8")).version
+
 const tinyCssCredits = `/*!
- * CSS Generated using @tiny-css/compiler@0.0.1 
+ * CSS Generated using @tiny-css/compiler@${version}
  * @author KR.Tirtho
  * ©Copyright 2020 KR.Tirtho
  * Licensed under MIT (https://github.com/tiny-css/compiler/blob/master/LICENSE)
@@ -83,7 +85,7 @@ const argv = yargs
             description:
                 "An array glob pattern to ignore the path for file searching",
             default: ["node_modules"],
-            defaultDescription: "**/node_modules/**/*",
+            defaultDescription: "./node_modules/**/*",
         },
         "disable-cache": {
             boolean: true,
@@ -99,8 +101,9 @@ const cwd = argv.cwd || process.cwd();
 
 const config: IOptions = {
     cwd: argv.cwd,
-    ignore: argv.ignore.map(ign => join(cwd, ign)),
+    ignore: argv.ignore,
     debug: argv.debug,
+    dot: true,
 };
 
 getClassnames(argv._[0], config)

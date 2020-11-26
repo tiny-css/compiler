@@ -9,7 +9,7 @@ describe("CSS Object Test", () => {
     let cssObj: StyleRules["rules"] | false;
     beforeAll((done) => {
         cssFile = fs.readFileSync(
-            join(process.cwd(), "src", "__test__", "__test_assets__", "getCSSObject.test.css"),
+            join(process.cwd(), "__test_assets__", "getCSSObject.test.css"),
             { encoding: "utf-8" }
         );
         done();
