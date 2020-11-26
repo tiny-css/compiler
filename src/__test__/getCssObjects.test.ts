@@ -1,22 +1,23 @@
-import { Media, Rule, StyleRules } from "css";
+import css, { Media, Rule, StyleRules, Stylesheet } from "css";
 import * as fs from "fs";
 import { join } from "path";
 import { cwd } from "process";
-import { ASTTypes, getCssObjects } from "../getCssObjects";
+import { ASTTypes } from "../utils/ASTTypes";
+import { getCssObjects } from "../getCssObjects";
 
 describe("CSS Object Test", () => {
-    let cssFile: string;
+    let stylesheetObj: Stylesheet;
     let cssObj: StyleRules["rules"] | false;
     beforeAll((done) => {
-        cssFile = fs.readFileSync(
+        stylesheetObj = css.parse(fs.readFileSync(
             join(process.cwd(), "__test_assets__", "getCSSObject.test.css"),
             { encoding: "utf-8" }
-        );
+        ));
         done();
     });
     beforeEach((done) => {
         const bootstrap_classes = JSON.parse(fs.readFileSync(join(cwd(), "__dev_test_assets__", "bootstrap_classes.json"), "utf-8"))
-        cssObj = getCssObjects(cssFile, Object.values(bootstrap_classes));
+        cssObj = getCssObjects(stylesheetObj, Object.values(bootstrap_classes));
         done();
     })
     it("Shouldn't output false instead of outputting css-AST[] ", () => {

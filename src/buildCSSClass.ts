@@ -1,11 +1,11 @@
-import css, { Media, Rule } from "css";
-import { ASTTypes } from "./getCssObjects";
+import css, { Media, Rule, Stylesheet } from "css";
 import * as fs from "fs";
 import isUrl from "is-url";
 import fetch from "node-fetch";
 import os from "os";
 import { join } from "path";
 import chalk from "chalk";
+import { ASTTypes } from "./utils/ASTTypes";
 /**
  * returns only those selectors which are class selectors
  * not HTML tag attribute or sudo selectors
@@ -67,7 +67,7 @@ interface BuildCSSClassOptions {
 
 interface BuildCSSClassObject{
     classnames: string[];
-    content: string;
+    stylesheetObj: Stylesheet;
 }
 
 /**
@@ -123,14 +123,14 @@ export async function buildCSSClass(
     } else {
         content = fs.readFileSync(cssPath, { encoding: "utf-8" });
     }
-    const cssFile = css.parse(content);
-    const selectors = cssFile.stylesheet?.rules
+    const stylesheetObj = css.parse(content);
+    const selectors = stylesheetObj.stylesheet?.rules
         .map(mapRules)
         .filter(Boolean)
         .flat(2) as string[];
     const uniqueSelectors = Array.from(new Set(selectors));
     return {
         classnames: uniqueSelectors,
-        content
+        stylesheetObj
     };
 }

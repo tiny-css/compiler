@@ -1,23 +1,6 @@
-import css, { Rule, Media, StyleRules } from "css";
+import { Rule, Media, StyleRules, Stylesheet } from "css";
+import { ASTTypes } from "./utils/ASTTypes";
 import { HTMLTagsRegexp } from "./utils/htmltagsRegexp";
-
-export enum ASTTypes {
-    rule = "rule",
-    comment = "comment",
-    media = "media",
-    charset = "charset",
-    customMedia = "custom-media",
-    document = "document",
-    fontFace = "font-face",
-    host = "host",
-    import = "import",
-    keyframes = "keyframes",
-    keyframe = "keyframe",
-    namespace = "namespace",
-    supports = "supports",
-    declaration = "declaration",
-    stylesheet = "stylesheet",
-}
 
 function getASTRules(rule: Rule, classes: string[]): Rule | void {
     /**
@@ -66,15 +49,14 @@ function getASTRules(rule: Rule, classes: string[]): Rule | void {
  *              `writeCssFile` function finishes the final check. This function only returns
  *              objects that lazily includes the css .{class} for that.
  * @author KR Tirtho
- * @param {string} cssFile the file that includes all the css style declarations as string.
+ * @param {string} stylesheetObj the file that includes all the css style declarations as string.
  * @param {string[]} classes all the classes that needs to be matched with css selectors
  * @returns {css.Rule} Rule
  */
 export function getCssObjects(
-    cssFile: string,
+    stylesheetObj: Stylesheet,
     classes: string[]
 ): StyleRules["rules"] | false {
-    const stylesheetObj = css.parse(cssFile);
     const cssObjects: StyleRules["rules"] = [];
 
     stylesheetObj.stylesheet?.rules.forEach((rule) => {

@@ -14,12 +14,13 @@ import { getClassnames } from "./src/getClassnames";
 import * as fs from "fs";
 import { join } from "path";
 import "./src/getCssObjects";
-import { ASTTypes, getCssObjects } from "./src/getCssObjects";
+import { getCssObjects } from "./src/getCssObjects";
 import css from "css";
 import yargs, { Argv } from "yargs";
 import chalk from "chalk";
 import { IOptions } from "glob";
 import { buildCSSClass } from "./src/buildCSSClass";
+import { ASTTypes } from "src/utils/ASTTypes";
 
 const version = JSON.parse(fs.readFileSync("./package.json", "utf-8")).version
 
@@ -120,7 +121,7 @@ getClassnames(argv._[0], config)
             const providedClassnames = await buildCSSClass(argv.input, { disabledCache: argv["disable-cache"], version: argv["cdn-version"] })
 
             const filteredClassnames = filterWithClassnames(classnames, providedClassnames.classnames);
-            const cssObj = getCssObjects(providedClassnames.content, filteredClassnames);
+            const cssObj = getCssObjects(providedClassnames.stylesheetObj, filteredClassnames);
 
             if (!cssObj) {
                 console.error(

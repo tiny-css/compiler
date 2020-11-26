@@ -18,6 +18,10 @@
     "test": "./lib/src/__test__",
     "example": "./example"
   },
+  "engines": {
+      "node": ">=11.0.0"
+  },
+  "engineStrict": true,
   "files": [
     "/lib",
     "/__test_assets__"
