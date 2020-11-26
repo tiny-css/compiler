@@ -20,7 +20,7 @@ import yargs, { Argv } from "yargs";
 import chalk from "chalk";
 import { IOptions } from "glob";
 import { buildCSSClass } from "./src/buildCSSClass";
-import { ASTTypes } from "src/utils/ASTTypes";
+import { ASTTypes } from "./src/utils/ASTTypes";
 
 const version = JSON.parse(fs.readFileSync("./package.json", "utf-8")).version
 
