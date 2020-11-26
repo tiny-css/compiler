@@ -1,6 +1,6 @@
 {
   "name": "@tiny-css/compiler",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "The compiler for compiling & reducing the bundle size of tiny-css",
   "main": "./lib/index.js",
   "scripts": {
