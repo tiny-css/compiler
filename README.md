@@ -32,7 +32,7 @@ yarn add @tiny-css/compiler --dev
 | output        | o     | The file where css declarations will be outputted                                                                                                                                        | ${cwd}/tiny.output.css    |
 | debug         | d     | Outputs verbose information about the currently running process                                                                                                                          | false                     |
 | cwd           | N/A   | Custom current working directory                                                                                                                                                         | process.cwd()             |
-| ignore        | N/A   | An array glob pattern to ignore the path for file searching                                                                                                                              | \*\*/node_modules/\*\*/\* |
+| ignore        | N/A   | An array glob pattern to ignore the path for file searching                                                                                                                              | ./node_modules/\*\*/\* |
 | disable-cache | N/A   | Disable caching stylesheets                                                                                                                                                              | false                     |
 
 ## Example
