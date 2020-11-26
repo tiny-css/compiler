@@ -57,7 +57,7 @@ An `--ignore` argument option can be passed to the cli to ignore any file/patter
 
 **Example**
 ```bash
-$ tiny-css ./**/*.html --input ./tiny.css --ignore ./test/**,./node_modules/**
+$ tiny-css ./**/*.html --input ./tiny.css --ignore ./test/** ./node_modules/**
 ```
 
 # Contributing
