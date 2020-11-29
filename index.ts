@@ -22,16 +22,6 @@ import { filterWithClassnames } from "./src/filterTinyClasses";
 import { buildCSSClass } from "./src/buildCSSClass";
 import { ASTTypes } from "./src/utils/ASTTypes";
 
-const { version } = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
-
-const tinyCssCredits = `/*!
- * CSS Generated using @tiny-css/compiler@${version}
- * @author KR.Tirtho
- * ©Copyright 2020 KR.Tirtho
- * Licensed under MIT (https://github.com/tiny-css/compiler/blob/master/LICENSE)
- */\n
-`;
-
 type TArgv = Argv["argv"];
 
 interface Arguments extends TArgv {
@@ -97,6 +87,17 @@ const argv = yargs
   })
   .help()
   .alias("help", "h").argv as Arguments;
+
+const { version } = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
+
+const tinyCssCredits = `/*!
+ * CSS Generated using @tiny-css/compiler@${version}
+ * @author KR.Tirtho
+ * ©Copyright 2020 KR.Tirtho
+ * Licensed under MIT (https://github.com/tiny-css/compiler/blob/master/LICENSE)
+ */\n
+`;
+
 
 const cwd = argv.cwd || process.cwd();
 
