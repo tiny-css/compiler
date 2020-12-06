@@ -21,7 +21,6 @@
     "rules": {
         "consistent-return": "off",
         "eol-last": "off",
-        "linebreak-style": ["error", "windows"],
         "quotes": "off",
         "no-console": "off",
         "@typescript-eslint/quotes": ["error", "double"],

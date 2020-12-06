@@ -4,11 +4,12 @@ import {
 import { ASTTypes } from "./utils/ASTTypes";
 import { HTMLTagsRegexp } from "./utils/htmltagsRegexp";
 
+export const sudoAttrSelectorRegex = /(:[:]?|\[).*\]?/g;
+
 function getASTRules(rule: Rule, classes: string[]): Rule | void {
   /**
      * clears css sudo/attribute (e.g. ::before/[type="text"]) selectors regexp
      */
-  const repX = /(:[:]?|\[).*\]?/g;
   const ignoreRootRegexp = /:root|\*+:+.*/g;
   const selectors = rule.selectors
     ?.map((selector) => {
@@ -20,7 +21,7 @@ function getASTRules(rule: Rule, classes: string[]): Rule | void {
       if (ignoreRootRegexp.test(selector)) {
         return selector;
       }
-      return selector.replace(repX, "");
+      return selector.replace(sudoAttrSelectorRegex, "");
     })
     .join(",")
     .replace(/\s+\+\s+|\s+>\s+/g, ",") //replaces "+" & ">" with ","

@@ -1,4 +1,5 @@
 import { HTMLTagsRegexp } from "./htmltagsRegexp";
+import { sudoAttrSelectorRegex } from "../getCssObjects";
 
 export enum SelectorType{
   class = "class",
@@ -12,6 +13,14 @@ export interface SelectorObject{
   selector: string[]
 }
 
+const isTruthyArray = (array: any[]): boolean => array && array.length !== 0;
+
+/**
+ * @description checks selectors string array & returns an selector AST object with types
+ * @author KR Tirtho
+ * @param {string[]} src array of selectors
+ * @return {*}  {SelectorObject[]}
+ */
 export function groupSelector(src:string[]): SelectorObject[] {
   const classSelectors = /\.(\w|\d|-|_)+/g;
   const idSelectors = /#(\w|\d|-|_)+/g;
@@ -28,13 +37,19 @@ export function groupSelector(src:string[]): SelectorObject[] {
     };
     const tagType: SelectorObject = {
       type: SelectorType.tag,
-      selector: str.replace(classSelectors, "").replace(idSelectors, "").match(HTMLTagsRegexp),
+      selector: str.replace(classSelectors, "").replace(idSelectors, "").replace(sudoAttrSelectorRegex, "").replace(/>|\+|~/g, " ")
+        .split(" ")
+        .filter((tag) => HTMLTagsRegexp.test(tag)),
     };
-    selectorStore.push(classType, idType);
+    console.log("tagType: ", str.replace(classSelectors, "").replace(idSelectors, "").replace(sudoAttrSelectorRegex, "").replace(/>|\+|~/g, " ")
+      .split(" "));
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    isTruthyArray(classType.selector) && selectorStore.push(classType);
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    isTruthyArray(idType.selector) && selectorStore.push(idType);
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    isTruthyArray(tagType.selector) && selectorStore.push(tagType);
   });
 
-  return [{
-    selector: [""],
-    type: SelectorType.class,
-  }];
+  return selectorStore;
 }
