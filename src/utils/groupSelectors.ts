@@ -1,4 +1,4 @@
-import { HTMLTagsRegexp } from "./htmltagsRegexp";
+import { HtmlTags } from "./htmltagsRegexp";
 import { sudoAttrSelectorRegex } from "../getCssObjects";
 
 export enum SelectorType{
@@ -13,7 +13,7 @@ export interface SelectorObject{
   selector: string[]
 }
 
-const isTruthyArray = (array: any[]): boolean => array && array.length !== 0;
+const isTruthyArray = (array: unknown[]): boolean => array && array.length !== 0;
 
 /**
  * @description checks selectors string array & returns an selector AST object with types
@@ -39,10 +39,11 @@ export function groupSelector(src:string[]): SelectorObject[] {
       type: SelectorType.tag,
       selector: str.replace(classSelectors, "").replace(idSelectors, "").replace(sudoAttrSelectorRegex, "").replace(/>|\+|~/g, " ")
         .split(" ")
-        .filter((tag) => HTMLTagsRegexp.test(tag)),
+        .filter((tag) => {
+          const tags = HtmlTags.split("|");
+          return tags.includes(tag);
+        }),
     };
-    console.log("tagType: ", str.replace(classSelectors, "").replace(idSelectors, "").replace(sudoAttrSelectorRegex, "").replace(/>|\+|~/g, " ")
-      .split(" "));
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isTruthyArray(classType.selector) && selectorStore.push(classType);
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
