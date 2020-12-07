@@ -24,6 +24,9 @@ const isTruthyArray = (array: unknown[]): boolean => array && array.length !== 0
 export function groupSelector(src:string[]): SelectorObject[] {
   const classSelectors = /\.(\w|\d|-|_)+/g;
   const idSelectors = /#(\w|\d|-|_)+/g;
+  const pseudoSelectorRegex = /^:{1,2}(\w|\d|-|\(|\))+$/;
+  const nestOpRegex = />|\+|~/g;
+  const globSelectorRegex = /\*(:{1,2}(\w|\d|\(|\)|-))?/g;
   const selectorStore:SelectorObject[] = [];
   src.forEach((str) => {
     const classType: SelectorObject = {
@@ -33,16 +36,21 @@ export function groupSelector(src:string[]): SelectorObject[] {
     };
     const idType:SelectorObject = {
       type: SelectorType.id,
-      selector: str.match(idSelectors)?.filter(Boolean) as string[],
+      selector: str.match(idSelectors)?.filter(Boolean) as string[], //returns all id selectors
     };
     const tagType: SelectorObject = {
       type: SelectorType.tag,
-      selector: str.replace(classSelectors, "").replace(idSelectors, "").replace(sudoAttrSelectorRegex, "").replace(/>|\+|~/g, " ")
+      selector: str.replace(classSelectors, "").replace(idSelectors, "").replace(sudoAttrSelectorRegex, "").replace(nestOpRegex, " ")
         .split(" ")
-        .filter((tag) => {
-          const tags = HtmlTags.split("|");
-          return tags.includes(tag);
-        }),
+        .filter((tag) => HtmlTags.split("|").includes(tag)),
+    };
+    const pseudoType: SelectorObject = {
+      type: SelectorType.pseudo,
+      selector: str.replace(nestOpRegex, " ").split(" ").filter((selector) => {
+        const isMatch = pseudoSelectorRegex.test(selector);
+        const isGlobMatch = globSelectorRegex.test(selector);
+        return isMatch || isGlobMatch;
+      }),
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isTruthyArray(classType.selector) && selectorStore.push(classType);
@@ -50,6 +58,8 @@ export function groupSelector(src:string[]): SelectorObject[] {
     isTruthyArray(idType.selector) && selectorStore.push(idType);
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isTruthyArray(tagType.selector) && selectorStore.push(tagType);
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    isTruthyArray(pseudoType.selector) && selectorStore.push(pseudoType);
   });
 
   return selectorStore;
