@@ -20,11 +20,12 @@ describe("CSS Object Test", () => {
     const bootstrapClasses = JSON.parse(fs.readFileSync(join(cwd(), "__dev_test_assets__", "bootstrap_classes.json"), "utf-8"));
     cssObj = getCssObjects(stylesheetObj, Object.values(bootstrapClasses));
   });
+  // #1
   it("Shouldn't output false instead of outputting css-AST[]", () => {
     expect(cssObj).not.toBe(false);
   });
-
-  it("Should output Array of css AST objects", () => {
+  // #2
+  it("Should match Array of css selectors with AST css selectors", () => {
     const selectors = [
       ".col",
       ".navbar .container",
@@ -33,15 +34,28 @@ describe("CSS Object Test", () => {
       ".navbar .container-md",
       ".navbar .container-lg",
       ".navbar .container-xl",
+      ".btn-primary:hover",
+      ".btn-outline-secondary:hover",
+      ".btn-outline-secondary.focus",
+      ".btn-outline-secondary:focus",
+      ".btn-outline-secondary.disabled",
+      ".btn-outline-secondary:disabled",
+      ".btn-outline-secondary:not(:disabled):not(.disabled).active",
+      ".btn-outline-secondary:not(:disabled):not(.disabled):active",
+      ".show>.btn-outline-secondary.dropdown-toggle",
+      ".btn-outline-secondary:not(:disabled):not(.disabled).active:focus",
+      ".btn-outline-secondary:not(:disabled):not(.disabled):active:focus",
     ];
     let onlySelectors: string[] = [];
     if (cssObj) {
       onlySelectors = cssObj
         .map((cssDec: Rule) => cssDec.selectors)
         .flat(1).filter(Boolean) as string[];
+      console.log("onlySelectors:", onlySelectors);
     }
     expect(onlySelectors).toEqual<string[]>(selectors);
   });
+  // #3
   it("Should output Array of css AST objects with @media queries", () => {
     const selectors = [
       ".col",

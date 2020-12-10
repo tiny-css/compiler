@@ -98,7 +98,6 @@ const tinyCssCredits = `/*!
  */\n
 `;
 
-
 const cwd = argv.cwd || process.cwd();
 
 const config: IOptions = {

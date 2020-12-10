@@ -2,45 +2,42 @@ import {
   Rule, Media, StyleRules, Stylesheet,
 } from "css";
 import { ASTTypes } from "./utils/ASTTypes";
-import { HTMLTagsRegexp } from "./utils/htmltagsRegexp";
+import {
+  groupSelector, GroupSelectorObject, SelectorType, sudoAttrSelectorRegex,
+} from "./utils/groupSelectors";
 
-export const sudoAttrSelectorRegex = /(:[:]?|\[).*\]?/g;
+const getSelectorRecursively = (selectorAST: GroupSelectorObject):string[] => {
+  if (selectorAST.type === SelectorType.class) {
+    if (!selectorAST.nested) {
+      return [selectorAST.selector];
+    }
+    if (selectorAST.nested && selectorAST.child?.type === SelectorType.class) {
+      const classes = [selectorAST.selector].concat(getSelectorRecursively(selectorAST.child));
+      return classes;
+    }
+  }
+  return [];
+};
 
 function getASTRules(rule: Rule, classes: string[]): Rule | void {
-  /**
-     * clears css sudo/attribute (e.g. ::before/[type="text"]) selectors regexp
-     */
-  const ignoreRootRegexp = /:root|\*+:+.*/g;
-  const selectors = rule.selectors
-    ?.map((selector) => {
-      /**
-             * replaces css sudo/attribute (e.g. ::before/[type="text"])
-             * selectors with ""
-             */
-      /* ignores the :root global var space & also *:before or *::(sudo-selector) */
-      if (ignoreRootRegexp.test(selector)) {
-        return selector;
-      }
-      return selector.replace(sudoAttrSelectorRegex, "");
-    })
-    .join(",")
-    .replace(/\s+\+\s+|\s+>\s+/g, ",") //replaces "+" & ">" with ","
-    .split(" ")
-    .join(",");
-  const matchedSelector = selectors?.split(",").filter((selector) => {
-    /* ignoring global :root and *:(sudo-selectors) */
-    const unwantedCssSelectorsRegex = /:(?=([^"'\\]*(\\.|["']([^"'\\]*\\.)*[^"'\\]*['"]))*[^"']*$)/g; //removes any attribute/sudo selector
-    const wordyClass = selector
-      .split(unwantedCssSelectorsRegex)
-      .join("")
-      .trim();
-    if (!wordyClass.startsWith(".") || !wordyClass.includes(".")) {
-      if (/:root|\*+:*.*/g.test(selector)) {
-        return true;
-      }
-      return HTMLTagsRegexp.test(wordyClass);
+  if (!rule.selectors) {
+    return undefined;
+  }
+  const selectorASTArr = rule.selectors.map(groupSelector);
+  const matchedSelector = selectorASTArr.filter((selectorAST) => {
+    if (selectorAST.type === SelectorType.tag || selectorAST.type === SelectorType.pseudo) {
+      return true;
     }
-    return classes.map((_class) => `.${_class}`).includes(wordyClass);
+    // const isValidClass = getSelectorRecursively(selectorAST).filter((selector) => {
+    //   const selectorPseudo = selector.match(sudoAttrSelectorRegex)?.join("");
+    //   const classesWithSelectorPseudo = classes.map((_class) => `.${_class}${selectorPseudo}`);
+    //   return classesWithSelectorPseudo.includes(selector);
+    // });
+    const isValidClass = classes.map((_class) => `.${_class}`).some((_class) => {
+      const selectorClasses = getSelectorRecursively(selectorAST).map((selector) => selector.replace(sudoAttrSelectorRegex, ""));
+      return selectorClasses.includes(_class);
+    });
+    return isValidClass;
   });
   if (matchedSelector?.length !== 0) {
     return rule;
@@ -48,8 +45,9 @@ function getASTRules(rule: Rule, classes: string[]): Rule | void {
 }
 
 /**
- * @description returns `cssObject`. Doesn't check for availability in output css file.
- *              `writeCssFile` function finishes the final check. This function only returns
+ * returns `cssObject`. Doesn't check for availability in output css file.
+ * `writeCssFile` function finishes the final check. This function only
+ * returns
  *              objects that lazily includes the css .{class} for that.
  * @author KR Tirtho
  * @param {string} stylesheetObj the file that includes all the css style declarations as string.
