@@ -11,6 +11,7 @@ describe("Building CSS class Test", () => {
 
   it("Should deep equal an Array of classnames that are defined in input CSS file", async () => {
     const cssProps = await buildCSSClass(join(cwd, "__test_assets__", "getCSSObject.test.css"), globalConfig);
+    console.log("cssProps:", cssProps);
     const classList = [
       ".col",
       ".navbar",
@@ -20,6 +21,13 @@ describe("Building CSS class Test", () => {
       ".container-md",
       ".container-lg",
       ".container-xl",
+      ".btn-primary",
+      ".btn-outline-secondary",
+      ".focus",
+      ".disabled",
+      ".active",
+      ".show",
+      ".dropdown-toggle",
       ".col-xs-11",
     ];
     expect(cssProps.classnames).toEqual(classList);
