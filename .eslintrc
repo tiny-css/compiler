@@ -35,6 +35,9 @@
             "error",
             { "functions": false, "classes": true, "variables": true, "typedefs": true }
           ],
-        "promise/always-return": "off"
+        "promise/always-return": "off",
+        "no-nested-ternary": "off",
+        "no-restricted-syntax": "off",
+        "space-infix-ops": "off"
     }
 }
