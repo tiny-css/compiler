@@ -18,7 +18,7 @@ import chalk from "chalk";
 import { IOptions } from "glob";
 import { getCssObjects } from "./src/getCssObjects";
 import { getClassnames } from "./src/getClassnames";
-import { filterWithClassnames } from "./src/filterTinyClasses";
+import { filterWithClassnames } from "./src/filterWithClassnames";
 import { buildCSSClass } from "./src/buildCSSClass";
 import { ASTTypes } from "./src/utils/ASTTypes";
 
@@ -43,12 +43,12 @@ const argv = yargs
     input: {
       alias: "i",
       description:
-                "CSS Input file which will be used to retrieve style objects. This can be a fs path or a cdm link",
+                "CSS Input file which will be used to retrieve style objects. This can be a fs path or a cdn link",
       demandOption: true,
     },
     "cdn-version": {
       alias: "c",
-      description: "The version of the css input file. Important if `--disable-cache` option is disabled & files are cached. This is used to determine the cache file location. Not required if using fs path",
+      description: "The version of the css input file. Important if `--disable-cache` option is not enabled & files are cached. This is used to determine the cache file location. Not required if using fs path",
       default: "0.0.1",
       defaultDescription: "0.0.1",
     },
@@ -88,7 +88,7 @@ const argv = yargs
   .help()
   .alias("help", "h").argv as Arguments;
 
-const { version } = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
+const { version } = JSON.parse(fs.readFileSync(join(__dirname, "..", "package.json"), "utf-8"));
 
 const tinyCssCredits = `/*!
  * CSS Generated using @tiny-css/compiler@${version}
